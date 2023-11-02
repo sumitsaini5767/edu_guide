@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const SignupPage = () => {
   return (
-    <div className="flex justify-center items-center w-full">
+    <div className="flex justify-center items-center w-full py-10">
       <Formik
         initialValues={{
           fullname: "",
