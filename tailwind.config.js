@@ -10,7 +10,11 @@ export default {
         bgcolor:{
           600:"#e9f7fa"
         },
+        themecolor:{
+          600:"#ff7f46"
+        },
         "paracolor":"#636363",
+        "bordercolor":"#ddd"
       },
       fontSize:{
         head:"2.25rem",

@@ -13,7 +13,19 @@
         @apply text-para font-para;
     }
     .spara{
-        @apply text-spara font-spara text-paracolor;
+        @apply text-spara font-spara text-paracolor mt-5 mb-1;
     }
-    
+    .inputfield{
+        @apply outline-none p-2.5 border border-bordercolor rounded
+    } 
+    .btn{
+        @apply bg-themecolor-600 rounded-full text-white p-3 text-subhead font-head
+    }
+    .social-icons{
+        @apply bg-themecolor-600 text-white p-2 rounded-full mr-1 border border-themecolor-600 cursor-pointer hover:hover-social-icons
+    }
+    .hover-social-icons{
+        @apply bg-white text-themecolor-600 
+    }
 }
+
