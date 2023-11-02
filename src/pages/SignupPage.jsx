@@ -1,8 +1,9 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {FaFacebookF,FaLinkedinIn,FaTwitter,FaGoogle} from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
-const SignupPge = () => {
+const SignupPage = () => {
   return (
     <div className="flex justify-center items-center w-full">
       <Formik
@@ -124,7 +125,7 @@ const SignupPge = () => {
               <a className="social-icons"><FaTwitter/></a>
               <a className="social-icons"><FaGoogle/></a>
             </div>
-            <p className="spara mt-7">Already Have An Account ? <a className="text-themecolor-600 cursor-pointer hover:text-black">Login</a></p>
+            <p className="spara mt-7">Already Have An Account ? <Link to="/" className="text-themecolor-600 cursor-pointer hover:text-black">Login</Link></p>
           </Form>
         )}
       </Formik>
@@ -132,4 +133,4 @@ const SignupPge = () => {
   );
 };
 
-export default SignupPge;
+export default SignupPage;
