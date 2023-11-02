@@ -1,5 +1,6 @@
 import React from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import {FaFacebookF,FaLinkedinIn,FaTwitter,FaGoogle} from "react-icons/fa6";
 
 const LoginPage = () => {
   return (
@@ -52,20 +53,20 @@ const LoginPage = () => {
               component="div"
             />
 
-<button className="btn mt-5 " type="submit" disabled={isSubmitting}>
+            <button className="btn mt-5 " type="submit" disabled={isSubmitting}>
               SIGN UP
             </button>
             <div className="flex items-center mt-12">
-                <p className=" z-10 text-white bg-themecolor-600 px-0.5 py-0.25 rounded-sm">OR</p>
-                <div className=" w-full h-0.5 bg-themecolor-600"></div>
+              <p className=" z-10 text-white bg-themecolor-600 px-0.5 py-0.25 rounded-sm">OR</p>
+              <div className=" w-full h-0.5 bg-themecolor-600"></div>
             </div>
             {/* <hr className="border-t-2 border-themecolor-600" /> */}
-            
+
             <div className="mt-12 flex">
-              <a className="social-icons"><FaFacebookF/></a>
-              <a className="social-icons"><FaLinkedinIn/></a>
-              <a className="social-icons"><FaTwitter/></a>
-              <a className="social-icons"><FaGoogle/></a>
+              <a className="social-icons"><FaFacebookF /></a>
+              <a className="social-icons"><FaLinkedinIn /></a>
+              <a className="social-icons"><FaTwitter /></a>
+              <a className="social-icons"><FaGoogle /></a>
             </div>
             <p className="spara mt-7">Dont’t Have An Account ? <a className="text-themecolor-600 cursor-pointer hover:text-black">Create Account</a></p>
           </Form>
