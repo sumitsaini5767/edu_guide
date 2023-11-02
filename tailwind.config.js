@@ -1,11 +1,27 @@
-/** @type {import('tailwindcss').Config} */
+/ @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src//*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        bgcolor:{
+          600:"#e9f7fa"
+        }
+      },
+      fontSize:{
+        head:"2.25rem",
+        subhead:"1.0625rem",
+        para:"1rem"
+      },
+      fontWeight:{
+        head:"700",
+        subhead:"600",
+        para:"400"
+      }
+    },
   },
   plugins: [],
 }
