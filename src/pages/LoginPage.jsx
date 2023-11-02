@@ -5,13 +5,9 @@ const LoginPage = () => {
   return (
     <div className="flex justify-center h-screen w-full">
       <Formik
-         initialValues={{ fullname: "", email: "", password: "" }}
+         initialValues={{email: "", password: "" }}
          validate={(values) => {
            const errors = {};
-           if (!values.fullname) {
-             errors.fullname = "Required";
-           }
-
            if (!values.email) {
              errors.email = "Required";
            } else if (
