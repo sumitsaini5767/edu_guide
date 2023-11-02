@@ -12,4 +12,8 @@
     .para{
         @apply text-para font-para;
     }
+    .spara{
+        @apply text-spara font-spara text-paracolor;
+    }
+    
 }
