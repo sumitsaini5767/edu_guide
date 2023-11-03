@@ -13,7 +13,6 @@ const SignupPage = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   // const submit = () =>{
   //   console.log("details", name,phone,email,password);
@@ -52,7 +51,7 @@ const SignupPage = () => {
             errors.password = "*Required";
           }
 
-          if (password !== confirmPassword) {
+          if (password !== values.confirmPassword) {
             errors.confirmPassword = "*Passwords must match";
           }
           return errors;
@@ -79,11 +78,6 @@ const SignupPage = () => {
               .then((data) => {
                 if (data.status === "OK") {
                   console.log("User Registered");
-                  setEmail("");
-                  setName("");
-                  setPhone("");
-                  setPassword("");
-                  setConfirmPassword("");
                 } 
                 else {
                   console.log(data.status);
@@ -163,8 +157,6 @@ const SignupPage = () => {
               name="confirmPassword"
               placeholder="Enter your password"
               className="inputfield"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
