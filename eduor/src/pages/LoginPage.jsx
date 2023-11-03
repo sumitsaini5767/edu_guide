@@ -46,11 +46,16 @@ const LoginPage= () => {
               }),
             })
             .then((res)=>res.json())
-            .then((data)=>{console.log(data,"userRegister")})
+            .then((data)=>{
+              console.log(data,"userRegister");
+              if(data.status === "OK"){
+                alert("Login successful!!");
+                window.localStorage.setItem("token",data.data);
+                window.location.href="/home";
+              }
+            })
             setSubmitting(false);
           }, 400); 
-          setEmail("");
-          setPassword("");
         }}
       >
         {({ isSubmitting }) => (

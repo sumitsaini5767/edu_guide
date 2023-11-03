@@ -46,16 +46,31 @@ app.post('/',async(req, res) =>{
         return res.json({status:"Email does not exist"});
     }
     if(await bcrypt.compare(password, oldUser.password)){
-        const token = jwt.sign({},JWT_SECRET);
+        const token = jwt.sign({email:oldUser.email},JWT_SECRET);
 
         if(res.status(201)){
             return res.json({status:"OK",data:token});
         }
         else{
-            return res.json({status:"error"});
+            return res.json({status:"Error"});
         }
     }
-    res.json({status :"error",error:"Invalid Password"});
+    res.json({status :"Error",error:"Invalid Password"});
+})
+
+app.post('/home',async(req,res)=>{
+    const {token} = req.body;
+    try{
+        const user1 = jwt.verify(token,JWT_SECRET);
+        console.log("after jwt verify",user1);
+        user.findOne({email:user1.email})
+        .then((data)=>{res.send({status:"OK",data:data});
+        })
+        .catch((error)=>{
+            res.send({status:"Error",data:error});
+        });
+    }
+    catch(error){}
 })
 
 app.listen(port,()=>console.log('listening on port', port));
