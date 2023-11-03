@@ -1,44 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {FaFacebookF,FaLinkedinIn,FaTwitter,FaGoogle} from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const LoginPage= () => {
+
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
   return (
     <div className="flex justify-center items-center w-full py-10">
       <Formik
         initialValues={{
-          fullname: "",
-          phone: "",
           email: "",
           password: "",
-          confirmPassword: "",
         }}
         validate={(values) => {
           const errors = {};
-          if (!values.fullname) {
-            errors.fullname = "*Required";
-          }
-          if (isNaN(values.phone)) {
-            errors.phone = "*Mobile number must be a number";
-          } else if (values.phone.length !== 10) {
-            errors.phone = "*Mobile number must be 10 digits";
-          }
-
-          if (!values.email) {
+          if (!email) {
             errors.email = "*Required";
           } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
           ) {
             errors.email = "*Invalid email address";
           }
-          if (!values.password) {
+          if (!password) {
             errors.password = "*Required";
           }
-          if (values.password !== values.confirmPassword) {
-            errors.confirmPassword = "*Passwords must match";
-          }
           return errors;
+        }}
+        onSubmit={(values, { setSubmitting }) => {
+          setTimeout(() => {
+            // console.log("details", email,password);
+            fetch("http://localhost:4000/",{
+              method:"POST",
+              crossDomain:true,
+              headers:{
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+              body: JSON.stringify({
+                email,
+                password
+              }),
+            })
+            .then((res)=>res.json())
+            .then((data)=>{console.log(data,"userRegister")})
+            setSubmitting(false);
+          }, 400); 
+          setEmail("");
+          setPassword("");
         }}
       >
         {({ isSubmitting }) => (
@@ -52,6 +64,8 @@ const LoginPage= () => {
               name="email"
               placeholder="Enter email address"
               className="inputfield"
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
@@ -65,6 +79,8 @@ const LoginPage= () => {
               name="password"
               placeholder="Enter password"
               className="inputfield"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"

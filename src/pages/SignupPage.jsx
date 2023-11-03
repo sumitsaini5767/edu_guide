@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import {FaFacebookF,FaLinkedinIn,FaTwitter,FaGoogle} from "react-icons/fa6";
+import {
+  FaFacebookF,
+  FaLinkedinIn,
+  FaTwitter,
+  FaGoogle,
+} from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const SignupPage = () => {
-
-  const [name,setName] = useState("");
-  const [phone,setPhone] = useState("");
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // const submit = () =>{
   //   console.log("details", name,phone,email,password);
@@ -35,27 +40,55 @@ const SignupPage = () => {
           } else if (phone.length !== 10) {
             errors.phone = "*Mobile number must be 10 digits";
           }
+          
 
           if (!email) {
             errors.email = "*Required";
-          } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
-          ) {
+          } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
             errors.email = "*Invalid email address";
           }
 
           if (!password) {
             errors.password = "*Required";
           }
-          
-          if (password !== values.confirmPassword) {
+
+          if (password !== confirmPassword) {
             errors.confirmPassword = "*Passwords must match";
           }
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
-            console.log("details", name,phone,email,password);
+            // console.log("details", name,phone,email,password);
+            fetch("http://localhost:4000/signup", {
+              method: "POST",
+              crossDomain: true,
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+              body: JSON.stringify({
+                name,
+                phone,
+                email,
+                password,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.status === "OK") {
+                  console.log("User Registered");
+                  setEmail("");
+                  setName("");
+                  setPhone("");
+                  setPassword("");
+                  setConfirmPassword("");
+                } 
+                else {
+                  console.log(data.status);
+                }
+              });
             setSubmitting(false);
           }, 400);
         }}
@@ -71,7 +104,7 @@ const SignupPage = () => {
               placeholder="Enter your name"
               className="inputfield"
               value={name}
-              onChange={(e)=>setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
@@ -86,7 +119,7 @@ const SignupPage = () => {
               placeholder="Enter your mobile number"
               className="inputfield"
               value={phone}
-              onChange={(e)=>setPhone(e.target.value)}
+              onChange={(e) => setPhone(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
@@ -101,7 +134,7 @@ const SignupPage = () => {
               placeholder="Enter email address"
               className="inputfield"
               value={email}
-              onChange={(e)=>setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
@@ -116,7 +149,7 @@ const SignupPage = () => {
               placeholder="Enter password"
               className="inputfield"
               value={password}
-              onChange={(e)=>setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
@@ -130,6 +163,8 @@ const SignupPage = () => {
               name="confirmPassword"
               placeholder="Enter your password"
               className="inputfield"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
@@ -141,18 +176,36 @@ const SignupPage = () => {
               SIGN UP
             </button>
             <div className="flex items-center mt-12">
-                <p className=" z-10 text-white bg-themecolor-600 px-0.5 py-0.25 rounded-sm">OR</p>
-                <div className=" w-full h-0.5 bg-themecolor-600"></div>
+              <p className=" z-10 text-white bg-themecolor-600 px-0.5 py-0.25 rounded-sm">
+                OR
+              </p>
+              <div className=" w-full h-0.5 bg-themecolor-600"></div>
             </div>
             {/* <hr className="border-t-2 border-themecolor-600" /> */}
-            
+
             <div className="mt-12 flex">
-              <Link className="social-icons"><FaFacebookF/></Link>
-              <Link className="social-icons"><FaLinkedinIn/></Link>
-              <Link className="social-icons"><FaTwitter/></Link>
-              <Link className="social-icons"><FaGoogle/></Link>
+              <Link className="social-icons">
+                <FaFacebookF />
+              </Link>
+              <Link className="social-icons">
+                <FaLinkedinIn />
+              </Link>
+              <Link className="social-icons">
+                <FaTwitter />
+              </Link>
+              <Link className="social-icons">
+                <FaGoogle />
+              </Link>
             </div>
-            <p className="spara mt-7">Already Have An Account ? <Link to="/" className="text-themecolor-600 cursor-pointer hover:text-black">Login</Link></p>
+            <p className="spara mt-7">
+              Already Have An Account ?{" "}
+              <Link
+                to="/"
+                className="text-themecolor-600 cursor-pointer hover:text-black"
+              >
+                Login
+              </Link>
+            </p>
           </Form>
         )}
       </Formik>
