@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 const HomePage = () => {
 
-    const [details,setDetails] = useState([]);
+    const [details,setDetails] = useState("");
 
     useEffect(()=>{
         fetch("http://localhost:4000/home",{
@@ -19,17 +19,16 @@ const HomePage = () => {
             })
             .then((res)=>res.json())
             .then((data)=>{
-              console.log(data,"userData");
-              
-              setDetails((prev)=>[...prev,data]);
-              console.log(details);
+            setDetails(data.data);
             })
     },[]);
+
 
   return (
     <>
         <h1 className='text-center head'>HOMEPAGE</h1>
-        <p className='subhead'>Hii</p>
+        <p className='text-center subhead'>{details.uname}</p>
+        <p className='text-center subhead'>{details.email}</p>
         
     </>
   )
