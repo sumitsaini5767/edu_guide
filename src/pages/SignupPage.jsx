@@ -147,10 +147,10 @@ const SignupPage = () => {
             {/* <hr className="border-t-2 border-themecolor-600" /> */}
             
             <div className="mt-12 flex">
-              <a className="social-icons"><FaFacebookF/></a>
-              <a className="social-icons"><FaLinkedinIn/></a>
-              <a className="social-icons"><FaTwitter/></a>
-              <a className="social-icons"><FaGoogle/></a>
+              <Link className="social-icons"><FaFacebookF/></Link>
+              <Link className="social-icons"><FaLinkedinIn/></Link>
+              <Link className="social-icons"><FaTwitter/></Link>
+              <Link className="social-icons"><FaGoogle/></Link>
             </div>
             <p className="spara mt-7">Already Have An Account ? <Link to="/" className="text-themecolor-600 cursor-pointer hover:text-black">Login</Link></p>
           </Form>
