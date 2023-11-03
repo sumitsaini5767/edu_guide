@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {FaFacebookF,FaLinkedinIn,FaTwitter,FaGoogle} from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const SignupPage = () => {
+
+  const [name,setName] = useState("");
+  const [phone,setPhone] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
+  // const submit = () =>{
+  //   console.log("details", name,phone,email,password);
+  // }
+
   return (
     <div className="flex justify-center items-center w-full py-10">
       <Formik
         initialValues={{
-          fullname: "",
+          name: "",
           phone: "",
           email: "",
           password: "",
@@ -16,29 +26,38 @@ const SignupPage = () => {
         }}
         validate={(values) => {
           const errors = {};
-          if (!values.fullname) {
-            errors.fullname = "*Required";
+          if (!name) {
+            errors.name = "*Required";
           }
-          if (isNaN(values.phone)) {
+
+          if (isNaN(phone)) {
             errors.phone = "*Mobile number must be a number";
-          } else if (values.phone.length !== 10) {
+          } else if (phone.length !== 10) {
             errors.phone = "*Mobile number must be 10 digits";
           }
 
-          if (!values.email) {
+          if (!email) {
             errors.email = "*Required";
           } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
           ) {
             errors.email = "*Invalid email address";
           }
-          if (!values.password) {
+
+          if (!password) {
             errors.password = "*Required";
           }
-          if (values.password !== values.confirmPassword) {
+          
+          if (password !== values.confirmPassword) {
             errors.confirmPassword = "*Passwords must match";
           }
           return errors;
+        }}
+        onSubmit={(values, { setSubmitting }) => {
+          setTimeout(() => {
+            console.log("details", name,phone,email,password);
+            setSubmitting(false);
+          }, 400);
         }}
       >
         {({ isSubmitting }) => (
@@ -48,13 +67,15 @@ const SignupPage = () => {
             <label className="spara">Name</label>
             <Field
               type="text"
-              name="fullname"
+              name="name"
               placeholder="Enter your name"
               className="inputfield"
+              value={name}
+              onChange={(e)=>setName(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
-              name="fullname"
+              name="name"
               component="div"
             />
 
@@ -64,6 +85,8 @@ const SignupPage = () => {
               name="phone"
               placeholder="Enter your mobile number"
               className="inputfield"
+              value={phone}
+              onChange={(e)=>setPhone(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
@@ -77,6 +100,8 @@ const SignupPage = () => {
               name="email"
               placeholder="Enter email address"
               className="inputfield"
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
@@ -90,6 +115,8 @@ const SignupPage = () => {
               name="password"
               placeholder="Enter password"
               className="inputfield"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
             />
             <ErrorMessage
               className="text-red-600 text-xs"
