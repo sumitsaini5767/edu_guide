@@ -46,7 +46,9 @@ app.post('/',async(req, res) =>{
         return res.json({status:"Email does not exist"});
     }
     if(await bcrypt.compare(password, oldUser.password)){
-        const token = jwt.sign({email:oldUser.email},JWT_SECRET,{expiresIn:10});
+        const token = jwt.sign({email:oldUser.email},JWT_SECRET,{
+            expiresIn:7200
+        });
 
         if(res.status(201)){
             return res.json({status:"OK",data:token});
@@ -63,14 +65,16 @@ app.post('/home',async(req,res)=>{
     try{
         const user1 = jwt.verify(token,JWT_SECRET,(err,res)=>{
             if(err){
-                return "token expired";
+                return "token expire";
             }
-            return res;
+            else{
+                return res;
+            }
         });
-        if(user1==="token expired"){
-           return res.send({status:"Error",data:"token expired"});
-        }
         console.log("after jwt verify",user1);
+        if(user1==="token expire"){
+            return res.send({status:"Error",data:"token expire"});
+        }
         user.findOne({email:user1.email})
         .then((data)=>{res.send({status:"OK",data:data});
         })
