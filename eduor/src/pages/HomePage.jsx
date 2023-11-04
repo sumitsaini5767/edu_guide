@@ -20,8 +20,12 @@ const HomePage = () => {
             .then((res)=>res.json())
             .then((data)=>{
             setDetails(data.data);
-            })
-    },[]);
+            if(data.data==="token expire"){
+              // alert("Token expired, please login again");
+              logout();
+            }  
+          })
+    },[details]);
 
     const logout=()=>{
       window.localStorage.clear();
