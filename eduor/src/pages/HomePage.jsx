@@ -4,6 +4,11 @@ const HomePage = () => {
 
     const [details,setDetails] = useState("");
 
+    const logout = () =>{
+        window.localStorage.clear();
+        window.location.href="/";
+    }
+
     useEffect(()=>{
         fetch("http://localhost:4000/home",{
               method:"POST",
@@ -20,6 +25,11 @@ const HomePage = () => {
             .then((res)=>res.json())
             .then((data)=>{
             setDetails(data.data);
+            if(data.data==="token expired"){
+                alert("Token expired.Please login again.");
+                window.localStorage.clear();
+                window.location.href="/";
+            }
             })
     },[]);
 
@@ -29,6 +39,7 @@ const HomePage = () => {
         <h1 className='text-center head'>HOMEPAGE</h1>
         <p className='text-center subhead'>Name: {details.uname}</p>
         <p className='text-center subhead'>Email: {details.email}</p>
+        <button className=" btn" onClick={logout}>LOG OUT</button>
         
     </>
   )
