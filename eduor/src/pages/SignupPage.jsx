@@ -194,7 +194,7 @@ const SignupPage = () => {
             <p className="spara mt-7">
               Already Have An Account ?{" "}
               <Link
-                to="/"
+                to="/login"
                 className="text-themecolor-600 cursor-pointer hover:text-black"
               >
                 Login
