@@ -4,10 +4,6 @@ const HomePage = () => {
 
     const [details,setDetails] = useState("");
 
-    const logout = () =>{
-        window.localStorage.clear();
-        window.location.href="/";
-    }
 
     useEffect(()=>{
         fetch("http://localhost:4000/home",{
