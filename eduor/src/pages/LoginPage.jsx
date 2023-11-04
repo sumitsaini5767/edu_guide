@@ -109,7 +109,7 @@ const LoginPage= () => {
               <Link className="social-icons"><FaTwitter/></Link>
               <Link className="social-icons"><FaGoogle/></Link>
             </div>
-            <p className="spara mt-7">Don't Have An Account ? <Link to="signup" className="text-themecolor-600 cursor-pointer hover:text-black">Create Account</Link></p>
+            <p className="spara mt-7">Don't Have An Account ? <Link to="/signup" className="text-themecolor-600 cursor-pointer hover:text-black">Create Account</Link></p>
           </Form>
         )}
       </Formik>
