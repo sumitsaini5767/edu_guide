@@ -23,13 +23,17 @@ const HomePage = () => {
             })
     },[]);
 
+    const logout=()=>{
+      window.localStorage.clear();
+      window.location.href="/login";
+    }
 
   return (
     <>
         <h1 className='text-center head'>HOMEPAGE</h1>
         <p className='text-center subhead'>Name: {details.uname}</p>
         <p className='text-center subhead'>Email: {details.email}</p>
-        
+        <button className='btn' onClick={logout}>Logout</button>
     </>
   )
 }
