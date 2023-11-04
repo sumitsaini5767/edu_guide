@@ -47,7 +47,7 @@ const LoginPage= () => {
             })
             .then((res)=>res.json())
             .then((data)=>{
-              console.log(data,"userRegister");
+              console.log(data,"userLogin");
               if(data.status === "OK"){
                 alert("Login successful!!");
                 window.localStorage.setItem("token",data.data);
