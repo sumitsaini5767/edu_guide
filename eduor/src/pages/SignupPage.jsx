@@ -76,8 +76,10 @@ const SignupPage = () => {
             })
               .then((res) => res.json())
               .then((data) => {
+                console.log(data,"userRegister");
                 if (data.status === "OK") {
-                  console.log("User Registered");
+                  alert("Registeration successful!!");
+                  window.location.href="/";
                 } 
                 else {
                   console.log(data.status);

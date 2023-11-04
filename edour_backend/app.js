@@ -55,7 +55,7 @@ app.post('/',async(req, res) =>{
             return res.json({status:"Error"});
         }
     }
-    res.json({status :"Error",error:"Invalid Password"});
+    res.json({status:"Invalid Password"});
 })
 
 app.post('/home',async(req,res)=>{
