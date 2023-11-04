@@ -79,7 +79,7 @@ const SignupPage = () => {
                 console.log(data,"userRegister");
                 if (data.status === "OK") {
                   alert("Registeration successful!!");
-                  window.location.href="/";
+                  window.location.href="/login";
                 } 
                 else {
                   console.log(data.status);
