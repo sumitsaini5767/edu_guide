@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {
   FaFacebookF,
@@ -7,16 +7,87 @@ import {
   FaGoogle,
 } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import app from "../firebase_config";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
 const SignupPage = () => {
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [verifyButton, setVerifyButton] = useState(false);
+  const [verifyOtp, setVerifyOtp] = useState(false);
 
+  // const changeMobile = (e) => {
+  //   setPhone(e.target.value);
+  //   if(phone.length === 10){
+  //     setVerifyButton(true);
+  //   }
+  //   else{
+  //     setVerifyButton(false);
+  //   }
+  // }
+
+  useEffect(()=>{
+    if(phone.length === 10){
+      setVerifyButton(true);
+    }
+    else{
+      setVerifyButton(false);
+    }
+  },[phone]);
+
+  const auth = getAuth(app);
   // const submit = () =>{
   //   console.log("details", name,phone,email,password);
   // }
+
+  const onCaptchaVerify = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response) => {
+        onSignInSubmit();
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        // ...
+      },
+      
+    });
+  }
+
+  const onSignInSubmit = () => {
+    onCaptchaVerify();
+    const phoneNumber = "+91" + phone;
+    const appVerifier = window.recaptchaVerifier;
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+    .then((confirmationResult) => {
+      // SMS sent. Prompt user to type the code from the message, then sign the
+      // user in with confirmationResult.confirm(code).
+      window.confirmationResult = confirmationResult;
+      alert("OTP sended!!");
+      setVerifyOtp(true);
+      // ...
+    }).catch((error) => {
+      // Error; SMS not sent
+      // ...
+    });
+  }
+
+  const verifyCode = () => {
+    window.confirmationResult.confirm(otp).then((result) => {
+      // User signed in successfully.
+      const user = result.user;
+      console.log(user);
+      alert("Verification Done!!");
+      setVerifyOtp(false);
+      // ...
+    }).catch((error) => {
+      alert("Invalid OTP");
+      // User couldn't sign in (bad verification code?)
+      // ...
+    });
+  }
 
   return (
     <div className="flex justify-center items-center w-full py-10">
@@ -93,6 +164,7 @@ const SignupPage = () => {
           <Form className="flex flex-col w-2/5  bg-bgcolor-600 rounded-md p-12">
             <p className="head">Welcome To Eduor!</p>
             <p className="para">Sign Up To Continue</p>
+            <p id="recaptcha-container"></p>
             <label className="spara">Name</label>
             <Field
               type="text"
@@ -122,6 +194,29 @@ const SignupPage = () => {
               name="phone"
               component="div"
             />
+            {verifyButton ?
+             <input type="button" onClick={onSignInSubmit} className="btn rounded-none cursor-pointer" value="Verify Mobile Number"/>
+             : null
+            }
+            
+            {verifyOtp ? 
+             <><label className="spara">OTP</label>
+             <Field
+               type="text"
+               placeholder="Enter your OTP"
+               className="inputfield"
+               value={otp}
+               onChange={(e) => setOtp(e.target.value)}
+             />
+             <ErrorMessage
+               className="text-red-600 text-xs"
+               name="phone"
+               component="div"
+             />
+             <input type="button" onClick={verifyCode} className="btn rounded-none cursor-pointer" value="Verify OTP"/>
+             </>
+             : null }
+            
 
             <label className="spara">Email</label>
             <Field
@@ -194,7 +289,7 @@ const SignupPage = () => {
             <p className="spara mt-7">
               Already Have An Account ?{" "}
               <Link
-                to="/"
+                to="/login"
                 className="text-themecolor-600 cursor-pointer hover:text-black"
               >
                 Login
