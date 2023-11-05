@@ -195,7 +195,7 @@ const SignupPage = () => {
               component="div"
             />
             {verifyButton ?
-             <input type="button" onClick={onSignInSubmit} className="btn rounded-none" value="Verify Mobile Number"/>
+             <input type="button" onClick={onSignInSubmit} className="btn rounded-none cursor-pointer" value="Verify Mobile Number"/>
              : null
             }
             
@@ -213,7 +213,7 @@ const SignupPage = () => {
                name="phone"
                component="div"
              />
-             <input type="button" onClick={verifyCode} className="btn rounded-none" value="Verify OTP"/>
+             <input type="button" onClick={verifyCode} className="btn rounded-none cursor-pointer" value="Verify OTP"/>
              </>
              : null }
             
