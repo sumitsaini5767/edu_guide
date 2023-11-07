@@ -35,7 +35,7 @@ app.post("/signup",async(req, res)=>{
         res.send({status:"OK"});
     }
     catch(err){
-        res.send({status:"Error"});
+        res.send({status:err});
     }
 })
 
