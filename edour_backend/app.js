@@ -84,4 +84,36 @@ app.post('/home',async(req,res)=>{
     catch(error){}
 })
 
+app.post("/forgot-password",async(req,res)=>{
+    const {email} = req.body;
+    try{
+        const oldUser = await user.findOne({email});
+        if(!oldUser){
+            return res.send({status:"User does not exist"});
+        }
+        const secret = JWT_SECRET + oldUser.password;
+        const token = jwt.sign({email:oldUser.email, id:oldUser._id},secret,{expiresIn:"5m"});
+        const link = `http://localhost:4000/reset-password/${oldUser._id}/${token}`;
+        console.log(link);
+    }
+    catch(err){}
+})
+
+app.get("/reset-password/:id/:token",async(req,res)=>{
+    const {id,token} = req.params;
+    console.log(req.params);
+    const oldUser = await user.findOne({_id:id});
+    if(!oldUser){
+        return res.send({status:"User does not exist"});
+    }
+    const secret = JWT_SECRET + oldUser.password;
+    try{
+        const verify = jwt.verify(token,secret);
+        res.send("Verified");
+    }
+    catch(err){
+        res.send("Not Verified");
+    }
+})
+
 app.listen(port,()=>console.log('listening on port', port));
