@@ -19,7 +19,7 @@ require("./userDetail");
 const user = mongoose.model("userInf");
 
 app.post("/signup",async(req, res)=>{
-    const {name,email,password} = req.body;
+    const {name,phone,email,password} = req.body;
     const encryptedPassword = await bcrypt.hash(password,10);
     try{
         const oldUser = await user.findOne({email});
@@ -28,6 +28,7 @@ app.post("/signup",async(req, res)=>{
         }
         await user.create({
             uname:name,
+            phone,
             email,
             password:encryptedPassword
         });
@@ -46,7 +47,7 @@ app.post('/',async(req, res) =>{
     }
     if(await bcrypt.compare(password, oldUser.password)){
         const token = jwt.sign({email:oldUser.email},JWT_SECRET,{
-            expiresIn:40
+            expiresIn:10
         });
 
         if(res.status(201)){

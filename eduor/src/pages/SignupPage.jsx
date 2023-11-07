@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {
   FaFacebookF,
@@ -7,22 +7,97 @@ import {
   FaGoogle,
 } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import app from "../firebase_config";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
 const SignupPage = () => {
 
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [verified, setVerified] = useState(false);
+  const [verifyButton, setVerifyButton] = useState(false);
+  const [verifyOtp, setVerifyOtp] = useState(false);
 
-  // const submit = () =>{
-  //   console.log("details", name,email,password);
+  // const changeMobile = (e) => {
+  //   setPhone(e.target.value);
+  //   if(phone.length === 10){
+  //     setVerifyButton(true);
+  //   }
+  //   else{
+  //     setVerifyButton(false);
+  //   }
   // }
+
+  useEffect(()=>{
+    if(phone.length === 10){
+      setVerifyButton(true);
+    }
+    else{
+      setVerifyButton(false);
+    }
+  },[phone]);
+
+  const auth = getAuth(app);
+  // const submit = () =>{
+  //   console.log("details", name,phone,email,password);
+  // }
+
+  const onCaptchaVerify = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response) => {
+        onSignInSubmit();
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        // ...
+      },
+      
+    });
+  }
+
+  const onSignInSubmit = () => {
+    onCaptchaVerify();
+    const phoneNumber = "+91" + phone;
+    const appVerifier = window.recaptchaVerifier;
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+    .then((confirmationResult) => {
+      // SMS sent. Prompt user to type the code from the message, then sign the
+      // user in with confirmationResult.confirm(code).
+      window.confirmationResult = confirmationResult;
+      alert("OTP sended!!");
+      setVerifyOtp(true);
+      // ...
+    }).catch((error) => {
+      // Error; SMS not sent
+      // ...
+    });
+  }
+
+  const verifyCode = () => {
+    window.confirmationResult.confirm(otp).then((result) => {
+      // User signed in successfully.
+      const user = result.user;
+      console.log(user);
+      alert("Verification Done!!");
+      setVerified(true);
+      setVerifyOtp(false);
+      // ...
+    }).catch((error) => {
+      alert("Invalid OTP");
+      // User couldn't sign in (bad verification code?)
+      // ...
+    });
+  }
 
   return (
     <div className="flex justify-center items-center w-full py-10">
       <Formik
         initialValues={{
           name: "",
+          phone: "",
+          otp:"",
           email: "",
           password: "",
           confirmPassword: "",
@@ -32,7 +107,14 @@ const SignupPage = () => {
           if (!name) {
             errors.name = "*Required";
           }
-      
+
+          if (isNaN(phone)) {
+            errors.phone = "*Mobile number must be a number";
+          } else if (phone.length !== 10) {
+            errors.phone = "*Mobile number must be 10 digits";
+          }
+          
+
           if (!email) {
             errors.email = "*Required";
           } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
@@ -48,10 +130,10 @@ const SignupPage = () => {
           }
           return errors;
         }}
-        onSubmit={(values, { setSubmitting }) => {
-          
+        onSubmit={(values) => {
+          if(verified){
             setTimeout(() => {
-              // console.log("details", name,password);
+              // console.log("details", name,phone,email,password);
               fetch("http://localhost:4000/signup", {
                 method: "POST",
                 crossDomain: true,
@@ -62,6 +144,7 @@ const SignupPage = () => {
                 },
                 body: JSON.stringify({
                   name,
+                  phone,
                   email,
                   password,
                 }),
@@ -77,11 +160,15 @@ const SignupPage = () => {
                     console.log(data.status);
                   }
                 });
-             
+                
             }, 400);
-          }}
+          }
+          else{
+            alert("Please verify your Mobile Number");
+          }
+        }}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form className="flex flex-col w-2/5  bg-bgcolor-600 rounded-md p-12">
             <p className="head">Welcome To Eduor!</p>
             <p className="para">Sign Up To Continue</p>
@@ -100,7 +187,46 @@ const SignupPage = () => {
               name="name"
               component="div"
             />
-                
+
+            <label className="spara">Mobile Number</label>
+            <Field
+              type="text"
+              name="phone"
+              placeholder="Enter your mobile number"
+              className="inputfield"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <ErrorMessage
+              className="text-red-600 text-xs"
+              name="phone"
+              component="div"
+            />
+            {verifyButton ?
+             <input type="button" onClick={onSignInSubmit} className={verified?"flex justify-end text-green-600":"btn rounded-none cursor-pointer"} value={verified?"Verified":"Verify Mobile Number"}/>
+             : null
+            }
+            
+            {verifyOtp ? 
+             <><label className="spara">OTP</label>
+             <Field
+               type="text"
+               placeholder="Enter your OTP"
+               className="inputfield"
+               name="otp"
+               value={otp}
+               onChange={(e) => setOtp(e.target.value)}
+             />
+             <ErrorMessage
+               className="text-red-600 text-xs"
+               name="phone"
+               component="div"
+             />
+             <input type="button" onClick={verifyCode} className="btn rounded-none cursor-pointer" value="Verify OTP"/>
+             </>
+             : null }
+            
+
             <label className="spara">Email</label>
             <Field
               type="email"
@@ -144,7 +270,7 @@ const SignupPage = () => {
               component="div"
             />
 
-            <button className="btn mt-5 " type="submit" disabled={isSubmitting}>
+            <button className="btn mt-5 " type="submit" >
               SIGN UP
             </button>
             <div className="flex items-center mt-12">
