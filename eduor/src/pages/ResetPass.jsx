@@ -11,8 +11,6 @@ import { Link } from "react-router-dom";
 const ResetPass = () => {
 
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   // const submit = () =>{
   //   console.log("details", name,email,password);
   // }
@@ -22,8 +20,6 @@ const ResetPass = () => {
       <Formik
         initialValues={{
           email: "",
-          password: "",
-          confirmPassword: "",
         }}
         validate={(values) => {
           const errors = {};
@@ -32,14 +28,6 @@ const ResetPass = () => {
             errors.email = "*Required";
           } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
             errors.email = "*Invalid email address";
-          }
-
-          if (!password) {
-            errors.password = "*Required";
-          }
-
-          if (password !== values.confirmPassword) {
-            errors.confirmPassword = "*Passwords must match";
           }
           return errors;
         }}
