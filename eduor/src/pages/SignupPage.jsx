@@ -9,13 +9,13 @@ import {
 import { Link } from "react-router-dom";
 
 const SignupPage = () => {
+
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   // const submit = () =>{
-  //   console.log("details", name,phone,email,password);
+  //   console.log("details", name,email,password);
   // }
 
   return (
@@ -23,7 +23,6 @@ const SignupPage = () => {
       <Formik
         initialValues={{
           name: "",
-          phone: "",
           email: "",
           password: "",
           confirmPassword: "",
@@ -33,14 +32,7 @@ const SignupPage = () => {
           if (!name) {
             errors.name = "*Required";
           }
-
-          if (isNaN(phone)) {
-            errors.phone = "*Mobile number must be a number";
-          } else if (phone.length !== 10) {
-            errors.phone = "*Mobile number must be 10 digits";
-          }
-          
-
+      
           if (!email) {
             errors.email = "*Required";
           } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
@@ -57,42 +49,43 @@ const SignupPage = () => {
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            // console.log("details", name,phone,email,password);
-            fetch("http://localhost:4000/signup", {
-              method: "POST",
-              crossDomain: true,
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "Access-Control-Allow-Origin": "*",
-              },
-              body: JSON.stringify({
-                name,
-                phone,
-                email,
-                password,
-              }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                console.log(data,"userRegister");
-                if (data.status === "OK") {
-                  alert("Registeration successful!!");
-                  window.location.href="/login";
-                } 
-                else {
-                  console.log(data.status);
-                }
-              });
-            setSubmitting(false);
-          }, 400);
-        }}
+          
+            setTimeout(() => {
+              // console.log("details", name,password);
+              fetch("http://localhost:4000/signup", {
+                method: "POST",
+                crossDomain: true,
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify({
+                  name,
+                  email,
+                  password,
+                }),
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  console.log(data,"userRegister");
+                  if (data.status === "OK") {
+                    alert("Registeration successful!!");
+                    window.location.href="/login";
+                  } 
+                  else {
+                    console.log(data.status);
+                  }
+                });
+             
+            }, 400);
+          }}
       >
         {({ isSubmitting }) => (
           <Form className="flex flex-col w-2/5  bg-bgcolor-600 rounded-md p-12">
             <p className="head">Welcome To Eduor!</p>
             <p className="para">Sign Up To Continue</p>
+            <p id="recaptcha-container"></p>
             <label className="spara">Name</label>
             <Field
               type="text"
@@ -107,22 +100,7 @@ const SignupPage = () => {
               name="name"
               component="div"
             />
-
-            <label className="spara">Mobile Number</label>
-            <Field
-              type="text"
-              name="phone"
-              placeholder="Enter your mobile number"
-              className="inputfield"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            <ErrorMessage
-              className="text-red-600 text-xs"
-              name="phone"
-              component="div"
-            />
-
+                
             <label className="spara">Email</label>
             <Field
               type="email"
@@ -194,7 +172,7 @@ const SignupPage = () => {
             <p className="spara mt-7">
               Already Have An Account ?{" "}
               <Link
-                to="/"
+                to="/login"
                 className="text-themecolor-600 cursor-pointer hover:text-black"
               >
                 Login
