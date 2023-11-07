@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { emit } = require('nodemon');
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -82,6 +83,43 @@ app.post('/home',async(req,res)=>{
         });
     }
     catch(error){}
+})
+
+
+app.post('/forgot-password',async(req,res)=>{
+    const{email} = req.body;
+    try{
+        const oldUser = await user.findOne({email});
+        if(!oldUser){
+            return res.json({status:"user not exists"});
+        }
+        const secret = JWT_SECRET + oldUser.password;
+        const token = jwt.sign({email:oldUser.email, id: oldUser._id }, secret, {
+            expiresIn: "5m",
+        });
+        const link =`http://localhost:4000/reset-password/${oldUser._id}/${token}`;
+        console.log(link);
+    }
+    catch(error) { 
+        console.log(error);
+    }
+})
+
+app.get("/reset-password/:id/:token", async (req, res) => {
+    const {id, token} = req.params;
+    console.log(req.params);
+    const oldUser = await user.findOne({ email});
+
+    if(!oldUser){
+        return res.json({status:"user not exists"});
+    }
+    const secret = JWT_SECRET + oldUser.password;
+    try{
+        const verify= jwt.verify(token, secret);
+        res.send("verified");
+    }catch{
+        res.send("not verified");
+    }
 })
 
 app.listen(port,()=>console.log('listening on port', port));
