@@ -17,6 +17,7 @@ const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
+  const [verified, setVerified] = useState(false);
   const [verifyButton, setVerifyButton] = useState(false);
   const [verifyOtp, setVerifyOtp] = useState(false);
 
@@ -80,6 +81,7 @@ const SignupPage = () => {
       const user = result.user;
       console.log(user);
       alert("Verification Done!!");
+      setVerified(true);
       setVerifyOtp(false);
       // ...
     }).catch((error) => {
@@ -95,6 +97,7 @@ const SignupPage = () => {
         initialValues={{
           name: "",
           phone: "",
+          otp:"",
           email: "",
           password: "",
           confirmPassword: "",
@@ -127,40 +130,45 @@ const SignupPage = () => {
           }
           return errors;
         }}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            // console.log("details", name,phone,email,password);
-            fetch("http://localhost:4000/signup", {
-              method: "POST",
-              crossDomain: true,
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "Access-Control-Allow-Origin": "*",
-              },
-              body: JSON.stringify({
-                name,
-                phone,
-                email,
-                password,
-              }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                console.log(data,"userRegister");
-                if (data.status === "OK") {
-                  alert("Registeration successful!!");
-                  window.location.href="/login";
-                } 
-                else {
-                  console.log(data.status);
-                }
-              });
-            setSubmitting(false);
-          }, 400);
+        onSubmit={(values) => {
+          if(verified){
+            setTimeout(() => {
+              // console.log("details", name,phone,email,password);
+              fetch("http://localhost:4000/signup", {
+                method: "POST",
+                crossDomain: true,
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify({
+                  name,
+                  phone,
+                  email,
+                  password,
+                }),
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  console.log(data,"userRegister");
+                  if (data.status === "OK") {
+                    alert("Registeration successful!!");
+                    window.location.href="/login";
+                  } 
+                  else {
+                    console.log(data.status);
+                  }
+                });
+                
+            }, 400);
+          }
+          else{
+            alert("Please verify your Mobile Number");
+          }
         }}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form className="flex flex-col w-2/5  bg-bgcolor-600 rounded-md p-12">
             <p className="head">Welcome To Eduor!</p>
             <p className="para">Sign Up To Continue</p>
@@ -195,7 +203,7 @@ const SignupPage = () => {
               component="div"
             />
             {verifyButton ?
-             <input type="button" onClick={onSignInSubmit} className="btn rounded-none cursor-pointer" value="Verify Mobile Number"/>
+             <input type="button" onClick={onSignInSubmit} className={verified?"flex justify-end text-green-600":"btn rounded-none cursor-pointer"} value={verified?"Verified":"Verify Mobile Number"}/>
              : null
             }
             
@@ -205,6 +213,7 @@ const SignupPage = () => {
                type="text"
                placeholder="Enter your OTP"
                className="inputfield"
+               name="otp"
                value={otp}
                onChange={(e) => setOtp(e.target.value)}
              />
@@ -261,7 +270,7 @@ const SignupPage = () => {
               component="div"
             />
 
-            <button className="btn mt-5 " type="submit" disabled={isSubmitting}>
+            <button className="btn mt-5 " type="submit" >
               SIGN UP
             </button>
             <div className="flex items-center mt-12">
