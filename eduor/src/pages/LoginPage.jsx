@@ -93,7 +93,7 @@ const LoginPage= () => {
               name="password"
               component="div"
             />
-
+            <Link to="/forgot-password" className="flex justify-end text-themecolor-600 cursor-pointer hover:text-black">Forgot Password</Link>
             <button className="btn mt-5 " type="submit" disabled={isSubmitting}>
               LOGIN
             </button>
