@@ -21,14 +21,67 @@ const user = mongoose.model("userInf");
 
 app.post("/signup",async(req, res)=>{
     const {name,email,password} = req.body;
-    const encryptedPassword = await bcrypt.hash(password,10);
+    // const encryptedPassword = await bcrypt.hash(password,10);
     try{
         const oldUser = await user.findOne({email});
         if(oldUser) {
             return res.json({status:"User already exists"});
         }
+        // verification for email 
+        const secret = JWT_SECRET + email;
+        const token = jwt.sign({uname:name,email:email,password:password},secret,{expiresIn:"10m"});
+        const link = `http://localhost:3000/verify-account/${email}/${token}`;
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'tanu42146@gmail.com',
+              pass: 'sylj wijg ighg ztsb'
+            }
+          });
+          
+          var mailOptions = {
+            from: 'youremail@gmail.com',
+            to: email,
+            subject: 'Verify Email Address',
+            text: link,
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+        res.send({status:"OK",data:link});
+        console.log(link);
+    }
+    catch(err){
+        res.send({status:err});
+    }
+})
+
+app.post("/verify-account/:email/:token",async(req, res)=>{
+
+    const {email,token} = req.params;
+    const secret = JWT_SECRET+email 
+    // const encryptedPassword = await bcrypt.hash(password,10);
+    try{
+        const user1 = jwt.verify(token,secret,(err,res)=>{
+            if(err){
+                console.log(err)
+                return "token expire";
+            }
+            else{
+                return res;
+            }
+        });
+        if(user1==="token expire"){
+            return res.send({status:"error",data:"token exp"})
+        }
+        const encryptedPassword = await bcrypt.hash(user1.password,10);
         await user.create({
-            uname:name,
+            uname:user1.uname,
             email,
             password:encryptedPassword
         });
@@ -38,6 +91,7 @@ app.post("/signup",async(req, res)=>{
         res.send({status:err});
     }
 })
+
 
 app.post('/',async(req, res) =>{
     const {email, password} = req.body;
@@ -71,7 +125,6 @@ app.post('/home',async(req,res)=>{
                 return res;
             }
         });
-        console.log("after jwt verify",user1);
         if(user1==="token expire"){
             return res.send({status:"Error",data:"token expire"});
         }
