@@ -7,6 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+var nodemailer = require('nodemailer');
 const port = 4000;
 const mongoUrl = "mongodb+srv://tanishagupta27:tanisha27@cluster0.bia1prq.mongodb.net/?retryWrites=true&w=majority";
 const JWT_SECRET ="qazxswedcvfrtgbnhyujm,kiol./;p[]"
@@ -93,13 +94,36 @@ app.post("/forgot-password",async(req,res)=>{
         }
         const secret = JWT_SECRET + oldUser.password;
         const token = jwt.sign({email:oldUser.email, id:oldUser._id},secret,{expiresIn:"5m"});
-        const link = `http://localhost:4000/reset-password/${oldUser._id}/${token}`;
+        const link = `http://localhost:3000/reset-password/${oldUser._id}/${token}`;
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'tanu42146@gmail.com',
+              pass: 'sylj wijg ighg ztsb'
+            }
+          });
+          
+          var mailOptions = {
+            from: 'youremail@gmail.com',
+            to: oldUser.email,
+            subject: 'Reset Password',
+            text: link,
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+        res.send({status:"OK",data:link});
         console.log(link);
     }
     catch(err){}
 })
 
-app.get("/reset-password/:id/:token",async(req,res)=>{
+app.post("/reset-password/:id/:token",async(req,res)=>{
     const {id,token} = req.params;
     console.log(req.params);
     const oldUser = await user.findOne({_id:id});
@@ -109,10 +133,22 @@ app.get("/reset-password/:id/:token",async(req,res)=>{
     const secret = JWT_SECRET + oldUser.password;
     try{
         const verify = jwt.verify(token,secret);
-        res.send("Verified");
+        const {newPassword} = req.body;
+        const encryptedPassword = await bcrypt.hash(newPassword,10);
+        await user.updateOne(
+        {
+            _id:id,
+        },
+        {
+            $set:{
+                password:encryptedPassword,
+            },
+        }
+        );
+        res.json({status:"OK"});
     }
     catch(err){
-        res.send("Not Verified");
+        res.json({status:"Something went wrong",data:err});
     }
 })
 
