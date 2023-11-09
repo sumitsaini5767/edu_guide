@@ -27,10 +27,10 @@ app.post("/signup",async(req, res)=>{
         if(oldUser) {
             return res.json({status:"User already exists"});
         }
-        // verification for email 
         const secret = JWT_SECRET + email;
         const token = jwt.sign({uname:name,email:email,password:password},secret,{expiresIn:"10m"});
         const link = `http://localhost:3000/verify-account/${email}/${token}`;
+        // const otp=Math.floor(100000 + Math.random() * 900000);  for 6 digit otp generation instead of link
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
