@@ -69,15 +69,16 @@ app.post("/verify-account/:email/:token",async(req, res)=>{
     try{
         const user1 = jwt.verify(token,secret,(err,res)=>{
             if(err){
-                console.log(err)
-                return "token expire";
+                console.log(err);
+                return err;
             }
             else{
+                console.log(res);
                 return res;
             }
         });
-        if(user1==="token expire"){
-            return res.send({status:"error",data:"token exp"})
+        if(!user1.email){
+            return res.send({status:"error",data:user1})
         }
         const encryptedPassword = await bcrypt.hash(user1.password,10);
         await user.create({
@@ -88,6 +89,7 @@ app.post("/verify-account/:email/:token",async(req, res)=>{
         res.send({status:"OK"});
     }
     catch(err){
+        console.log(err);
         res.send({status:err});
     }
 })

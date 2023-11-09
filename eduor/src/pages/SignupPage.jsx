@@ -74,10 +74,10 @@ const SignupPage = () => {
                   setEmailSent(true);
                 }
                 else {
-                  console.log(data.status);
+                  alert(data.status);
                 }
               });
-
+              setSubmitting(false);
           }, 400);
         }}
       >
