@@ -5,6 +5,7 @@ import SignupPage from './pages/SignupPage'
 import ForgotPassword from './pages/ForgotPassword'
 import { BrowserRouter as Router,Routes, Route} from 'react-router-dom'
 import ResetPassword from './pages/ResetPassword'
+import VerifyEmail from './pages/VerifyEmail'
 
 function App() {
   const isLoggedIn = window.localStorage.getItem('loggedIn');
@@ -18,6 +19,7 @@ function App() {
           <Route path="/home" element={<HomePage/>}></Route>
           <Route path="/forgot-password" element={<ForgotPassword/>}></Route>
           <Route path="/reset-password/:id/:token" element={<ResetPassword/>}></Route>
+          <Route path="/verify-account/:email/:token" element={<VerifyEmail/>}></Route>
         </Routes>
       </Router>
     </>
