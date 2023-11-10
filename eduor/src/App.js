@@ -13,13 +13,13 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={isLoggedIn==="true"? <HomePage/> : <LoginPage/>}></Route>
-          <Route path="/login" element={<LoginPage/>}></Route>
+          <Route path="/" element={isLoggedIn==="true"? <HomePage/> : <SignupPage/>}></Route>
           <Route path="/signup" element={<SignupPage/>}></Route>
-          <Route path="/home" element={<HomePage/>}></Route>
+          <Route path="/verify-email/:email/:token" element={<VerifyEmail/>}></Route>
+          <Route path="/login" element={<LoginPage/>}></Route>
           <Route path="/forgot-password" element={<ForgotPassword/>}></Route>
           <Route path="/reset-password/:id/:token" element={<ResetPassword/>}></Route>
-          <Route path="/verify-account/:email/:token" element={<VerifyEmail/>}></Route>
+          <Route path="/home" element={<HomePage/>}></Route>
         </Routes>
       </Router>
     </>
